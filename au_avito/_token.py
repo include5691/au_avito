@@ -1,6 +1,8 @@
 import os
 import requests
+from cachetools import cached, TTLCache
 
+@cached(cache=TTLCache(maxsize=1, ttl=10))
 def get_token() -> str | None:
     """Get access token by client_id and client_secret"""
     data = {
