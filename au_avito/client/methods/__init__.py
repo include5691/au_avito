@@ -1,0 +1,3 @@
+from .chats import ChatsMixin
+
+class Methods(ChatsMixin): ...
