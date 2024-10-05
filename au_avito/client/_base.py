@@ -4,7 +4,7 @@ from cachetools import cached, TTLCache
 
 class Base:
 
-    @cached(cache=TTLCache(maxsize=1, ttl=10))
+    @cached(cache=TTLCache(maxsize=1, ttl=1))
     def get_token(self) -> str | None:
         """Get access token by client_id and client_secret"""
         data = {
