@@ -1,14 +1,14 @@
 import requests
 from .._base import Base
 
-class ChatsMixin(Base):
+class MessagesMixin(Base):
 
-    def get_chats(self) -> list[dict] | None:
-        """Get a list of chats for the authenticated user"""
+    def get_messages(self, chat_id: str) -> dict | None:
+        """Get messages by its ID"""
         user_id = self.get_user_id()
         if user_id is None:
             return None
-        url = f'https://api.avito.ru/messenger/v2/accounts/{user_id}/chats'
+        url = f'https://api.avito.ru/messenger/v3/accounts/{user_id}/chats/{chat_id}/messages/'
         headers = {
             'Authorization': f'Bearer {self.get_token()}'
         }
@@ -17,7 +17,7 @@ class ChatsMixin(Base):
             data = response.json()
             if not data:
                 return None
-            return data.get("chats")
+            return data
         except requests.RequestException as e:
-            print(f"Error obtaining chats: {e}")
+            print(f"Error obtaining chat: {e}")
             return None
