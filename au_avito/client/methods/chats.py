@@ -3,7 +3,7 @@ from .._base import Base
 
 class ChatsMixin(Base):
 
-    def get_chats(self) -> list[dict] | None:
+    def get_chats(self, count: int = 100) -> list[dict] | None:
         """Get a list of chats for the authenticated user"""
         user_id = self.get_user_id()
         if user_id is None:
@@ -12,12 +12,19 @@ class ChatsMixin(Base):
         headers = {
             'Authorization': f'Bearer {self.get_token()}'
         }
-        try:
-            response = requests.get(url, headers=headers)
-            data = response.json()
-            if not data:
-                return None
-            return data.get("chats")
-        except requests.RequestException as e:
-            print(f"Error obtaining chats: {e}")
-            return None
+        result = []
+        while len(result) < count:
+            try:
+                response = requests.get(url, params={"offset": len(result)}, headers=headers)
+                data = response.json()
+                if not data:
+                    return None
+                chats = data.get("chats")
+                if not chats:
+                    break
+                result += data.get("chats")
+            except requests.RequestException as e:
+                print(f"Error obtaining chats: {e}")
+                break
+        return result if result else None
+    
