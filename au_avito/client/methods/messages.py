@@ -1,0 +1,23 @@
+import requests
+from .._base import Base
+
+class MessagesMixin(Base):
+
+    def get_messages(self, chat_id: str) -> dict | None:
+        """Get messages by its ID"""
+        user_id = self.get_user_id()
+        if user_id is None:
+            return None
+        url = f'https://api.avito.ru/messenger/v3/accounts/{user_id}/chats/{chat_id}/messages/'
+        headers = {
+            'Authorization': f'Bearer {self.get_token()}'
+        }
+        try:
+            response = requests.get(url, headers=headers)
+            data = response.json()
+            if not data:
+                return None
+            return data
+        except requests.RequestException as e:
+            print(f"Error obtaining chat: {e}")
+            return None
