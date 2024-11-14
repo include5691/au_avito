@@ -1,4 +1,4 @@
-import os
+import logging
 import requests
 from cachetools import cached, TTLCache
 
@@ -21,23 +21,42 @@ class Base:
             token_data = response.json()
             return token_data['access_token']
         except requests.RequestException as e:
-            print(f"Error obtaining token: {e}")
+            logging.error(f"Error obtaining token: {e}")
             return None
-
-    def get_user_id(self) -> int | None:
-        """Get the user ID of the authenticated user"""
+    
+    def _get_user_data(self) -> dict | None:
+        """Get user data"""
         url = 'https://api.avito.ru/core/v1/accounts/self'
         headers = {
             'Authorization': f'Bearer {self.get_token()}'
         }
-
         try:
             response = requests.get(url, headers=headers)
+            if response.status_code != 200:
+                logging.error(f"Error obtaining user ID: {response.text}")
+                return None
             user_data = response.json()
-            return user_data.get('id')
+            if not user_data or not isinstance(user_data, dict):
+                logging.error(f"Error obtaining user ID: {user_data}")
+                return None
+            return user_data
         except requests.RequestException as e:
-            print(f"Error obtaining user ID: {e}")
+            logging.error(f"Error obtaining user ID: {e}")
             return None
+
+    def get_user_id(self) -> int | None:
+        """Get the user ID of the authenticated user"""
+        user_data = self._get_user_data()
+        if not user_data:
+            return None
+        return user_data.get('id')
+
+    def get_user_name(self) -> str | None:
+        """Get the name of the authenticated user"""
+        user_data = self._get_user_data()
+        if not user_data:
+            return None
+        return user_data.get('name')
 
     def __init__(self, client_id: str, client_secret: str) -> None:
         self.client_id = client_id
