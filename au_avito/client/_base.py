@@ -33,15 +33,15 @@ class Base:
         try:
             response = requests.get(url, headers=headers)
             if response.status_code != 200:
-                logging.error(f"Error obtaining user ID: {response.text}")
+                logging.error(f"Error obtaining user data: {response.text}")
                 return None
             user_data = response.json()
             if not user_data or not isinstance(user_data, dict):
-                logging.error(f"Error obtaining user ID: {user_data}")
+                logging.error(f"Error obtaining user data: {user_data}")
                 return None
             return user_data
         except requests.RequestException as e:
-            logging.error(f"Error obtaining user ID: {e}")
+            logging.error(f"Error obtaining user data: {e}")
             return None
 
     def get_user_id(self) -> int | None:
