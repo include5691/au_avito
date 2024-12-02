@@ -19,8 +19,10 @@ class Base:
         }
         try:
             response = requests.post(url, data=data, headers=headers, timeout=10)
-            token_data = response.json()
-            return token_data['access_token']
+            data = response.json()
+            if not data or not isinstance(data, dict):
+                return None
+            return data.get('access_token')
         except RequestException as e:
             logging.error(f"Error obtaining token: {e} with RequestException")
             return None
