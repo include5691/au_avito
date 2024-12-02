@@ -1,5 +1,6 @@
 import logging
 import requests
+from requests.exceptions import RequestException
 from cachetools import cached, TTLCache
 
 class Base:
@@ -20,7 +21,10 @@ class Base:
             response = requests.post(url, data=data, headers=headers, timeout=10)
             token_data = response.json()
             return token_data['access_token']
-        except requests.RequestException as e:
+        except RequestException as e:
+            logging.error(f"Error obtaining token: {e} with RequestException")
+            return None
+        except Exception as e:
             logging.error(f"Error obtaining token: {e}")
             return None
     
@@ -40,8 +44,11 @@ class Base:
                 logging.error(f"Error obtaining user data: {user_data}")
                 return None
             return user_data
-        except requests.RequestException as e:
-            logging.error(f"Error obtaining user data: {e}")
+        except RequestException as e:
+            logging.error(f"Error obtaining user data: {e} with RequestException")
+            return None
+        except Exception as e:
+            logging.error(f"Error obtaining token: {e}")
             return None
 
     def get_user_id(self) -> int | None:
