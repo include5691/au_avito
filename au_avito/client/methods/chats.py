@@ -1,7 +1,9 @@
+import logging
 import requests
+from requests.exceptions import RequestException
 from .._base import Base
 
-class ChatsMixin(Base):
+class Chats(Base):
 
     def get_chats(self, count: int = 100) -> list[dict] | None:
         """Get a list of chats for the authenticated user"""
@@ -23,8 +25,7 @@ class ChatsMixin(Base):
                 if not chats:
                     break
                 result += data.get("chats")
-            except requests.RequestException as e:
-                print(f"Error obtaining chats: {e}")
+            except RequestException as e:
+                logging.error(f"RequestException: Error obtaining chats: {e}")
                 break
         return result if result else None
-    

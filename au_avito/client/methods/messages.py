@@ -1,7 +1,9 @@
+import logging
 import requests
+from requests.exceptions import RequestException
 from .._base import Base
 
-class MessagesMixin(Base):
+class Messages(Base):
 
     def get_messages(self, chat_id: str) -> dict | None:
         """Get messages by its ID"""
@@ -19,5 +21,5 @@ class MessagesMixin(Base):
                 return None
             return data
         except requests.RequestException as e:
-            print(f"Error obtaining chat: {e}")
+            logging.error(f"RequestException: Error obtaining chat: {e}")
             return None

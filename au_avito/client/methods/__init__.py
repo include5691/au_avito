@@ -1,4 +1,4 @@
-from .chats import ChatsMixin
-from .messages import MessagesMixin
+from .chats import Chats
+from .messages import Messages
 
-class Methods(ChatsMixin, MessagesMixin): ...
+class Methods(Chats, Messages): ...
