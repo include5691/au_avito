@@ -5,7 +5,7 @@ from .._base import Base
 
 class Chats(Base):
 
-    def get_chats(self, count: int = 100) -> list[dict] | None:
+    def get_chats(self, limit: int = 100) -> list[dict] | None:
         """Get a list of chats for the authenticated user"""
         user_id = self.get_user_id()
         if user_id is None:
@@ -15,7 +15,7 @@ class Chats(Base):
             'Authorization': f'Bearer {self.get_token()}'
         }
         result = []
-        while len(result) < count:
+        while len(result) < limit:
             try:
                 response = requests.get(url, params={"offset": len(result)}, headers=headers)
                 data = response.json()
