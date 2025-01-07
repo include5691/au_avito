@@ -12,20 +12,17 @@ class Base:
             'client_secret': self.client_secret,
         }
         url = 'https://api.avito.ru/token/'
-        headers = {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
         try:
-            response = requests.post(url, data=data, headers=headers, timeout=10)
+            response = requests.post(url, data=data, timeout=10)
             data = response.json()
             if not data or not isinstance(data, dict):
                 return None
             return data.get('access_token')
         except RequestException as e:
-            logging.error(f"Error obtaining token: {e} with RequestException")
+            logging.error(f"Error obtaining token with RequestException: {e} for client {self.client_id}")
             return None
         except Exception as e:
-            logging.error(f"Error obtaining token: {e}")
+            logging.error(f"Error obtaining token: {e} for client {self.client_id}")
             return None
     
     def _get_user_data(self) -> dict | None:
@@ -45,10 +42,10 @@ class Base:
                 return None
             return user_data
         except RequestException as e:
-            logging.error(f"Error obtaining user data: {e} with RequestException")
+            logging.error(f"Error obtaining user data with RequestException: {e} for client {self.client_id}")
             return None
         except Exception as e:
-            logging.error(f"Error obtaining token: {e}")
+            logging.error(f"Error obtaining token: {e} for client {self.client_id}")
             return None
 
     def get_user_id(self) -> int | None:
