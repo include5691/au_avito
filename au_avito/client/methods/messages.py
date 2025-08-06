@@ -19,7 +19,8 @@ class Messages(Base):
             data = response.json()
             if not data:
                 return None
-            return data
+            if 'messages' in data:
+                return data['messages']
         except requests.RequestException as e:
             logging.error(f"RequestException: Error obtaining chat: {e}")
             return None
